@@ -34,12 +34,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject _attackPrefabs;
     public float _delayAttack = 0f;
 
+    private bool _isrunning = false;
+
 
     void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
-        _playerPos = transform.position;  
+        _playerPos = transform.position;
     }
 
     void Start()
@@ -55,9 +57,10 @@ public class PlayerController : MonoBehaviour
         else handleMovement();
         if (_isGrounded) handleJump();
         if (!_isAttack) attack();
-        
+
         updateAnimation();
         updateBR();
+        Checkpoint();
     }
 
     private void checkGrounded()
@@ -82,7 +85,9 @@ public class PlayerController : MonoBehaviour
     private void handleMovement()
     {
         float _moveInput = Input.GetAxisRaw("Horizontal");
-        _rb.linearVelocity = new Vector2(_moveInput * PlayerManager.Instance.Stats.moveSpeed(), _rb.linearVelocity.y);
+        if (Input.GetKey(KeyCode.LeftShift)) _isrunning = true;
+        else _isrunning = false;
+        _rb.linearVelocity = new Vector2(_moveInput * PlayerManager.Instance.Stats.GetMoveSpeed(_isrunning), _rb.linearVelocity.y);
 
         if (_moveInput > 0.1)
         {
@@ -152,13 +157,13 @@ public class PlayerController : MonoBehaviour
                 _cameraSpeed += 0.01f;
         }
     }
-    
+
     // cập nhật vị trí background theo chuển động nhân vật tạo hiệu ứng chiều sâu
     private void updateBR()
     {
-        float _moveBr1 = PlayerManager.Instance.Stats.moveSpeed() / 300;
-        float _moveBr2 = PlayerManager.Instance.Stats.moveSpeed() / 450;
-        float _moveBr3 = PlayerManager.Instance.Stats.moveSpeed() / 550;
+        float _moveBr1 = PlayerManager.Instance.Stats.GetMoveSpeed(_isrunning) / 300;
+        float _moveBr2 = PlayerManager.Instance.Stats.GetMoveSpeed(_isrunning) / 450;
+        float _moveBr3 = PlayerManager.Instance.Stats.GetMoveSpeed(_isrunning) / 550;
         if (transform.position.x > _playerPos.x)
         {
             _playerPos = transform.position;
@@ -172,6 +177,16 @@ public class PlayerController : MonoBehaviour
             _br1.transform.position = new Vector3(_br1.transform.position.x - _moveBr1, _br1.transform.position.y, _br1.transform.position.z);
             _br2.transform.position = new Vector3(_br2.transform.position.x - _moveBr2, _br2.transform.position.y, _br2.transform.position.z);
             _br3.transform.position = new Vector3(_br3.transform.position.x - _moveBr3, _br3.transform.position.y, _br3.transform.position.z);
+        }
+    }
+
+    private void Checkpoint()
+    {
+        checkpoint checkp = FindAnyObjectByType<checkpoint>();
+        if (Input.GetKeyDown(KeyCode.R) && checkp._daDenGan)
+        {
+            PlayerManager.Instance.SaveGame();
+            Debug.Log("da save");
         }
     }
 }
