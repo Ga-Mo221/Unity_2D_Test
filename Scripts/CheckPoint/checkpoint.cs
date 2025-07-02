@@ -24,6 +24,7 @@ public class checkpoint : MonoBehaviour
         if (_daDenGan)
         {
             _rButton.SetActive(true);
+            
         }
         else
         {

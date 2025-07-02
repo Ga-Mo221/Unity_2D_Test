@@ -8,6 +8,7 @@ public class PlayerManager : MonoBehaviour
     // Dữ liệu chỉ số nhân vật chính
     public PlayerStats Stats = new PlayerStats();
 
+
     private void Awake()
     {
         // Đảm bảo chỉ có một PlayerManager tồn tại trong game
@@ -19,7 +20,7 @@ public class PlayerManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject); // Giữ lại object này khi chuyển scene
-
+        
         LoadGameOrCreateNew();
     }
 
@@ -88,6 +89,9 @@ public class PlayerManager : MonoBehaviour
 
             // Giảm hồi chiêu
             _cooldownReduction = 1,
+
+            // Tiền tệ
+            _xeng = 0,
 
             // Kỹ năng đã mở
             _doubleJump = false,

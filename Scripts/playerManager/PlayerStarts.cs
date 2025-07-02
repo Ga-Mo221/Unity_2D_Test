@@ -45,6 +45,9 @@ public class PlayerStats
     // Giảm hồi chiêu
     public float _cooldownReduction;
 
+    // tiền tệ
+    public int _xeng;
+
     // Kỹ năng đã mở
     public bool _doubleJump;
     public bool _skillQ;
